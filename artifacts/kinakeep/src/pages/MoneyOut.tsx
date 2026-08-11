@@ -273,7 +273,7 @@ export default function MoneyOut() {
 
               {/* Receipt Upload */}
               <div className="space-y-3 pt-2">
-                <FormLabel>Receipt Photo (Highly Recommended)</FormLabel>
+                <label className="text-sm font-medium leading-none">Receipt Photo (Highly Recommended)</label>
                 <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:bg-muted/50 transition-colors">
                   <input
                     type="file"

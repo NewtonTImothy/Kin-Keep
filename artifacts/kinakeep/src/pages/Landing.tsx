@@ -31,7 +31,7 @@ export default function Landing() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="px-6 py-20 md:py-32 text-center max-w-4xl mx-auto flex flex-col items-center">
-          <div className="inline-block px-4 py-1.5 rounded-full bg-secondary/20 text-secondary-foreground font-semibold text-sm mb-6">
+          <div className="inline-block px-4 py-1.5 rounded-full bg-secondary/15 text-secondary font-semibold text-sm mb-6">
             Built for PNG SMEs
           </div>
           <h1 className="text-5xl md:text-7xl font-display font-bold text-primary tracking-tight mb-6 leading-tight">
