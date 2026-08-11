@@ -243,9 +243,9 @@ export default function Dashboard() {
           <CardContent>
             {txnsLoading ? (
               <div className="py-8 text-center text-muted-foreground">Loading...</div>
-            ) : recentTxns && recentTxns.transactions.length > 0 ? (
+            ) : recentTxns && recentTxns.length > 0 ? (
               <div className="space-y-4 mt-2">
-                {recentTxns.transactions.map(txn => (
+                {recentTxns.map(txn => (
                   <div key={txn.id} className="flex items-center justify-between p-3 rounded-lg border border-border bg-card/50 hover:bg-accent transition-colors">
                     <div className="flex items-center gap-4 overflow-hidden">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${txn.type === 'income' ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'}`}>
