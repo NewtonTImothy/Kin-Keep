@@ -67,19 +67,20 @@
 }
 
 :root {
-  --background: 270 25% 97%;
-  --foreground: 272 55% 12%;
-  --border: 270 20% 87%;
-  --input: 270 20% 87%;
+  /* Silver kina coin palette — cool metallic gray neutrals, purple/pink brand accents */
+  --background: 216 14% 95%;
+  --foreground: 216 20% 14%;
+  --border: 216 12% 82%;
+  --input: 216 12% 82%;
   --ring: 270 55% 42%;
 
-  --card: 0 0% 100%;
-  --card-foreground: 272 55% 12%;
-  --card-border: 270 20% 87%;
+  --card: 216 18% 99%;
+  --card-foreground: 216 20% 14%;
+  --card-border: 216 12% 86%;
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 272 55% 12%;
-  --popover-border: 270 20% 87%;
+  --popover: 216 18% 99%;
+  --popover-foreground: 216 20% 14%;
+  --popover-border: 216 12% 82%;
 
   --primary: 270 55% 42%;
   --primary-foreground: 0 0% 100%;
@@ -87,51 +88,52 @@
   --secondary: 320 62% 62%;
   --secondary-foreground: 0 0% 100%;
 
-  --muted: 270 20% 93%;
-  --muted-foreground: 270 25% 38%;
+  --muted: 216 12% 90%;
+  --muted-foreground: 216 14% 38%;
 
-  --accent: 28 80% 94%;
-  --accent-foreground: 272 55% 12%;
+  --accent: 216 12% 90%;
+  --accent-foreground: 216 20% 14%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --sidebar: 270 55% 32%;
-  --sidebar-foreground: 0 0% 100%;
-  --sidebar-border: 270 55% 25%;
+  /* Gunmetal sidebar — the darkest silver shadow tones of the coin */
+  --sidebar: 216 18% 22%;
+  --sidebar-foreground: 216 14% 92%;
+  --sidebar-border: 216 18% 17%;
   --sidebar-primary: 320 62% 62%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 270 45% 40%;
-  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-accent: 216 16% 30%;
+  --sidebar-accent-foreground: 216 14% 92%;
   --sidebar-ring: 320 62% 62%;
 
   --chart-1: 270 55% 42%;
   --chart-2: 320 62% 62%;
   --chart-3: 28 85% 58%;
-  --chart-4: 270 35% 62%;
-  --chart-5: 320 40% 76%;
+  --chart-4: 216 30% 48%;
+  --chart-5: 270 30% 68%;
 
   --radius: 0.5rem;
 
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.06);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.08);
 }
 
 .dark {
-  --background: 272 40% 8%;
-  --foreground: 270 25% 97%;
-  --border: 270 35% 20%;
-  --input: 270 35% 20%;
+  --background: 216 18% 10%;
+  --foreground: 216 14% 93%;
+  --border: 216 16% 22%;
+  --input: 216 16% 22%;
   --ring: 320 62% 62%;
 
-  --card: 272 40% 11%;
-  --card-foreground: 270 25% 97%;
-  --card-border: 270 35% 20%;
+  --card: 216 18% 13%;
+  --card-foreground: 216 14% 93%;
+  --card-border: 216 16% 22%;
 
-  --popover: 272 40% 11%;
-  --popover-foreground: 270 25% 97%;
-  --popover-border: 270 35% 20%;
+  --popover: 216 18% 13%;
+  --popover-foreground: 216 14% 93%;
+  --popover-border: 216 16% 22%;
 
   --primary: 320 62% 62%;
   --primary-foreground: 0 0% 100%;
@@ -139,22 +141,22 @@
   --secondary: 270 55% 42%;
   --secondary-foreground: 0 0% 100%;
 
-  --muted: 270 35% 18%;
-  --muted-foreground: 270 20% 65%;
+  --muted: 216 16% 20%;
+  --muted-foreground: 216 12% 62%;
 
-  --accent: 270 35% 18%;
-  --accent-foreground: 270 25% 97%;
+  --accent: 216 16% 20%;
+  --accent-foreground: 216 14% 93%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --sidebar: 272 40% 8%;
-  --sidebar-foreground: 270 25% 97%;
-  --sidebar-border: 270 35% 20%;
+  --sidebar: 216 18% 8%;
+  --sidebar-foreground: 216 14% 93%;
+  --sidebar-border: 216 16% 18%;
   --sidebar-primary: 320 62% 62%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 270 35% 18%;
-  --sidebar-accent-foreground: 270 25% 97%;
+  --sidebar-accent: 216 16% 18%;
+  --sidebar-accent-foreground: 216 14% 93%;
   --sidebar-ring: 320 62% 62%;
 }
 
