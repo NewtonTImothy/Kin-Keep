@@ -63,9 +63,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-full">
         <div className="p-6">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center font-bold text-xl">
-              K
-            </div>
+            <img src="/logo.png" alt="KinaKeep" className="w-9 h-9 object-contain" />
             <span className="font-display font-bold text-2xl tracking-tight">KinaKeep</span>
           </div>
 
@@ -131,9 +129,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Mobile Header */}
         <header className="md:hidden flex items-center justify-between p-4 bg-primary text-primary-foreground border-b border-primary-border shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-secondary text-secondary-foreground flex items-center justify-center font-bold text-xl">
-              K
-            </div>
+            <img src="/logo.png" alt="KinaKeep" className="w-8 h-8 object-contain" />
             <span className="font-display font-bold text-xl tracking-tight">KinaKeep</span>
           </div>
           

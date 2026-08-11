@@ -22,9 +22,7 @@ export default function Landing() {
       {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between max-w-7xl w-full mx-auto">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded bg-primary text-primary-foreground flex items-center justify-center font-bold text-xl">
-            K
-          </div>
+          <img src="/logo.png" alt="KinaKeep" className="w-9 h-9 object-contain" />
           <span className="font-display font-bold text-2xl tracking-tight text-primary">KinaKeep</span>
         </div>
         <Button onClick={login} variant="ghost" className="font-semibold text-primary">Log in</Button>
@@ -139,9 +137,7 @@ export default function Landing() {
       <footer className="bg-foreground text-background/80 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-              K
-            </div>
+            <img src="/logo.png" alt="KinaKeep" className="w-7 h-7 object-contain brightness-0 invert" />
             <span className="font-display font-bold text-xl tracking-tight text-background">KinaKeep</span>
           </div>
           <p className="text-sm">A simple digital notebook for your business money.</p>
