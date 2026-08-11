@@ -38,44 +38,57 @@ export default function Landing() {
       <main className="flex-1">
 
         {/* ── Hero ── */}
-        <section className="px-5 pt-16 pb-14 md:pt-28 md:pb-24 flex flex-col items-center text-center max-w-3xl mx-auto">
-          {/* Logo mark */}
-          <div className="mb-8">
-            <img src="/logo.png" alt="" className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto drop-shadow-md" />
+        <section className="relative px-5 pt-16 pb-14 md:pt-28 md:pb-24 flex flex-col items-center text-center max-w-3xl mx-auto">
+          {/* Mobile-only kina note background */}
+          <div className="md:hidden absolute inset-0 -mx-5 overflow-hidden pointer-events-none" aria-hidden="true">
+            <img
+              src="/kina-note.png"
+              alt=""
+              className="w-full h-full object-cover object-center scale-110"
+            />
+            {/* gradient overlay — light at bottom so text breathes, tinted at top */}
+            <div className="absolute inset-0 bg-gradient-to-b from-background/88 via-background/80 to-background/95" />
           </div>
+          {/* All hero content — above the absolute bg */}
+          <div className="relative z-10 flex flex-col items-center w-full">
+            {/* Logo mark */}
+            <div className="mb-6">
+              <img src="/logo.png" alt="" className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto drop-shadow-lg" />
+            </div>
 
-          {/* Badge */}
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary/15 text-secondary text-xs font-semibold tracking-wide uppercase mb-5">
-            Built for PNG Small Businesses
-          </span>
+            {/* Badge */}
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary/15 text-secondary text-xs font-semibold tracking-wide uppercase mb-5 backdrop-blur-sm">
+              Built for PNG Small Businesses
+            </span>
 
-          {/* Headline — 3 lines max on smallest screen */}
-          <h1 className="font-display font-bold text-[2.2rem] leading-tight md:text-6xl text-primary tracking-tight mb-4">
-            Every Kina.<br />Accounted For.
-          </h1>
+            {/* Headline */}
+            <h1 className="font-display font-bold text-[2.2rem] leading-tight md:text-6xl text-primary tracking-tight mb-4 drop-shadow-sm">
+              Every Kina.<br />Accounted For.
+            </h1>
 
-          {/* One-liner sub */}
-          <p className="text-base md:text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
-            Your digital cashbook — record sales, expenses, and receipts from any phone, instantly.
-          </p>
+            {/* One-liner sub */}
+            <p className="text-base md:text-lg text-foreground/70 max-w-md mb-8 leading-relaxed">
+              Your digital cashbook — record sales, expenses, and receipts from any phone, instantly.
+            </p>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-            <Button
-              onClick={login}
-              size="lg"
-              className="w-full sm:w-auto h-12 px-8 text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
-            >
-              Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <Button
-              onClick={login}
-              size="lg"
-              variant="ghost"
-              className="w-full sm:w-auto h-12 px-6 text-base text-muted-foreground hover:text-primary"
-            >
-              Log in to my account
-            </Button>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+              <Button
+                onClick={login}
+                size="lg"
+                className="w-full sm:w-auto h-12 px-8 text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
+              >
+                Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                onClick={login}
+                size="lg"
+                variant="ghost"
+                className="w-full sm:w-auto h-12 px-6 text-base text-muted-foreground hover:text-primary"
+              >
+                Log in to my account
+              </Button>
+            </div>
           </div>
         </section>
 
