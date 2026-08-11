@@ -99,7 +99,13 @@ export default function MoneyIn() {
         setIsUploading(false);
       }
 
+      if (!businessId) {
+        toast({ title: "Error", description: "No active business selected.", variant: "destructive" });
+        return;
+      }
+
       await createTxn.mutateAsync({
+        businessId,
         data: {
           type: 'income',
           amount: values.amount,

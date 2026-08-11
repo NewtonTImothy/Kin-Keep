@@ -16,10 +16,13 @@ export default function Landing() {
     );
   }
 
-  if (isAuthenticated) {
-    setLocation('/app/dashboard');
-    return null;
-  }
+  React.useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      setLocation('/app/dashboard');
+    }
+  }, [isLoading, isAuthenticated, setLocation]);
+
+  if (isAuthenticated) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
