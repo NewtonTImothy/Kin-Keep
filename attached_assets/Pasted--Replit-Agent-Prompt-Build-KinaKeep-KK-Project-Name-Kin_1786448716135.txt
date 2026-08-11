@@ -1,0 +1,1478 @@
+# Replit Agent Prompt — Build KinaKeep (KK)
+
+## Project Name
+
+**KinaKeep (KK) — SME Digital Bookkeeping & Receipt Management System**
+
+## Product Tagline
+
+**“Keep Every Kina Accounted For.”**
+
+## Product Vision
+
+Build a simple, modern, mobile-first web application called **KinaKeep (KK)** designed specifically to help Small and Medium Enterprises (SMEs) in Papua New Guinea record, organize, and understand their business finances.
+
+KinaKeep is **not intended to be complicated accounting software**. Its primary purpose is to help SME owners answer three simple questions:
+
+1. **How much money came into my business?**
+2. **How much money went out of my business?**
+3. **Do I have proof/receipts for my transactions?**
+
+The application should function as a **digital cashbook + receipt filing system + simple business reporting dashboard**.
+
+The first version should focus on simplicity, reliability, usability, and a clean professional interface.
+
+---
+
+# 1. TARGET USERS
+
+The primary users are SME owners and operators in Papua New Guinea, including:
+
+* Trade stores
+* Small retail shops
+* Market vendors
+* Small contractors
+* Transport businesses
+* Coffee businesses
+* Small restaurants/takeaways
+* Tailoring businesses
+* Service businesses
+* Freelancers
+* Sole traders
+* Small family businesses
+
+Many users may have limited accounting knowledge.
+
+Therefore, avoid complicated accounting terminology.
+
+Use simple terms such as:
+
+* Money In
+* Money Out
+* Sales
+* Expenses
+* Receipt
+* Customer
+* Supplier
+* Business Balance
+* Report
+
+Avoid forcing users to understand debit/credit accounting concepts.
+
+---
+
+# 2. CORE VALUE PROPOSITION
+
+KinaKeep helps SME owners:
+
+* Record every business transaction
+* Keep digital copies of receipts
+* Track money coming into the business
+* Track money going out of the business
+* Search old transactions
+* Monitor business cash flow
+* Identify missing receipts
+* Generate monthly reports
+* Export records
+* Keep business documents organized
+
+Core message:
+
+**“Record every Kina. Keep every receipt. Understand your business.”**
+
+---
+
+# 3. TECHNOLOGY STACK
+
+Use a modern, maintainable full-stack architecture.
+
+### Frontend
+
+* React
+* TypeScript
+* Tailwind CSS
+* Responsive design
+* Modern component architecture
+
+### Backend
+
+* Node.js
+* Express
+* TypeScript
+
+### Database
+
+Prefer:
+
+* PostgreSQL
+* Prisma ORM
+
+If PostgreSQL is unavailable in the initial Replit environment, structure the application so the database can easily be connected later.
+
+### Authentication
+
+Implement secure authentication with:
+
+* Email
+* Password
+* Password hashing
+* Session/JWT-based authentication
+* Logout
+* Protected routes
+
+Never store plain-text passwords.
+
+### File Storage
+
+Implement receipt/document upload using a storage abstraction so the storage provider can be changed later.
+
+### Charts
+
+Use a lightweight chart library such as Recharts.
+
+---
+
+# 4. BRANDING
+
+Brand name:
+
+**KinaKeep**
+
+Short name:
+
+**KK**
+
+Use the KK logo/monogram throughout the application.
+
+Create a clean professional logo concept using:
+
+**KK**
+
+combined with a subtle visual element representing:
+
+* Kina
+* Money
+* Receipt
+* Record keeping
+* Checkmark
+
+Do not make the interface look like a bank.
+
+The visual identity should feel:
+
+* Professional
+* Trustworthy
+* Simple
+* Friendly
+* Modern
+* PNG-focused
+
+Use a clean color palette with a strong primary brand color and neutral backgrounds.
+
+Do not overcrowd the interface.
+
+---
+
+# 5. APPLICATION STRUCTURE
+
+Create the following main sections:
+
+### Sidebar / Navigation
+
+* Dashboard
+* Money In
+* Money Out
+* Transactions
+* Receipts
+* Customers
+* Suppliers
+* Reports
+* Documents
+* Settings
+
+On mobile, convert this into a responsive bottom navigation or hamburger menu.
+
+---
+
+# 6. DASHBOARD
+
+Create a professional SME dashboard.
+
+At the top:
+
+**Good morning, [User Name]**
+
+Display the selected business.
+
+Example:
+
+**Newton Trade Store**
+
+Then display four major cards:
+
+### Business Balance
+
+Example:
+
+**K 18,450.00**
+
+### Money In
+
+Current month:
+
+**K 32,500.00**
+
+### Money Out
+
+Current month:
+
+**K 21,300.00**
+
+### Net Cash Flow
+
+**K 11,200.00**
+
+Use clear visual indicators.
+
+---
+
+## Dashboard Actions
+
+Create two large primary buttons:
+
+### + Money In
+
+### + Money Out
+
+These should be very easy to access, especially on mobile.
+
+---
+
+## Dashboard Charts
+
+Add:
+
+### Cash Flow Chart
+
+Show money coming in and going out over the selected period.
+
+Allow:
+
+* This week
+* This month
+* Last month
+* Custom range
+
+### Expense Breakdown
+
+Display expenses by category.
+
+---
+
+## Recent Transactions
+
+Show the latest transactions:
+
+| Date | Description | Category | Money In | Money Out |
+| ---- | ----------- | -------- | -------: | --------: |
+
+Allow clicking a transaction to view its full details.
+
+---
+
+# 7. MONEY IN
+
+Create a simple transaction form.
+
+Fields:
+
+* Date
+* Amount
+* Description
+* Category
+* Payment Method
+* Customer
+* Receipt
+* Notes
+
+Categories should initially include:
+
+* Sales
+* Services
+* Customer Payment
+* Business Investment
+* Loan Received
+* Other Income
+
+Payment methods:
+
+* Cash
+* Bank
+* EFTPOS/Card
+* Mobile Money
+* Other
+
+The user must be able to add custom categories later.
+
+---
+
+# 8. MONEY OUT
+
+Create a similar transaction form.
+
+Fields:
+
+* Date
+* Amount
+* Description
+* Category
+* Payment Method
+* Supplier
+* Receipt
+* Notes
+
+Initial expense categories:
+
+* Stock Purchase
+* Fuel
+* Transport
+* Rent
+* Wages
+* Electricity
+* Water
+* Internet
+* Phone
+* Office Supplies
+* Repairs
+* Equipment
+* Loan Repayment
+* Marketing
+* Other Expense
+
+Allow custom categories.
+
+---
+
+# 9. RECEIPT MANAGEMENT
+
+This is one of the most important features.
+
+Every transaction should allow the user to attach a receipt.
+
+Support:
+
+* JPG
+* JPEG
+* PNG
+* PDF
+
+Allow users to:
+
+* Upload receipt
+* Preview receipt
+* Download receipt
+* Delete receipt
+* Replace receipt
+
+Generate a unique receipt/document reference.
+
+Example:
+
+**KK-REC-2026-000001**
+
+---
+
+# 10. RECEIPT STATUS
+
+Every transaction should have a receipt status:
+
+### Receipt Attached
+
+Green status.
+
+### Receipt Missing
+
+Red/orange warning status.
+
+Create a dashboard section:
+
+**Receipt Documentation**
+
+Example:
+
+Transactions:
+
+**183**
+
+Receipts attached:
+
+**171**
+
+Missing receipts:
+
+**12**
+
+Receipt coverage:
+
+**93%**
+
+Add:
+
+**View Missing Receipts**
+
+This should show all transactions without supporting receipts.
+
+---
+
+# 11. TRANSACTIONS PAGE
+
+Create a complete transaction management page.
+
+Features:
+
+* Search
+* Filter
+* Sort
+* Pagination
+* Date range
+* Money In / Money Out filter
+* Category filter
+* Payment method filter
+* Receipt status filter
+
+Search should support:
+
+* Description
+* Customer
+* Supplier
+* Reference number
+* Category
+
+Transaction table:
+
+| Date | Reference | Description | Category | Type | Amount | Receipt | Actions |
+| ---- | --------- | ----------- | -------- | ---- | -----: | ------- | ------- |
+
+Actions:
+
+* View
+* Edit
+* Delete
+* View Receipt
+
+Add confirmation before deleting transactions.
+
+---
+
+# 12. TRANSACTION DETAILS
+
+Create a detailed transaction page/modal.
+
+Example:
+
+**Transaction KK-TXN-000184**
+
+Type:
+
+Money Out
+
+Amount:
+
+**K 850.00**
+
+Date:
+
+**11 August 2026**
+
+Category:
+
+Stock Purchase
+
+Supplier:
+
+ABC Trading
+
+Payment:
+
+Cash
+
+Description:
+
+Business stock purchase
+
+Receipt:
+
+**View Receipt**
+
+Notes:
+
+Stock purchased for trade store.
+
+Provide:
+
+* Edit
+* Delete
+* Print
+* Download receipt
+
+---
+
+# 13. CUSTOMERS
+
+Create a basic customer management system.
+
+Fields:
+
+* Name
+* Phone
+* Email
+* Address
+* Notes
+
+Show:
+
+* Total purchases
+* Amount paid
+* Outstanding amount
+
+Allow users to record credit sales.
+
+Example:
+
+**John Doe**
+
+Total credit:
+
+K 2,500
+
+Paid:
+
+K 2,000
+
+Outstanding:
+
+**K 500**
+
+---
+
+# 14. SUPPLIERS
+
+Create a supplier management section.
+
+Fields:
+
+* Supplier Name
+* Contact Person
+* Phone
+* Email
+* Address
+* Notes
+
+Show transaction history and total purchases from each supplier.
+
+---
+
+# 15. CREDIT SALES
+
+Add a simple feature for money owed to the business.
+
+Example:
+
+## Money Owed to Me
+
+John Doe — K500
+Peter — K750
+Mary — Paid
+
+Total outstanding:
+
+**K1,250**
+
+Allow:
+
+**Mark as Paid**
+
+When marked as paid, create the appropriate money-in transaction.
+
+---
+
+# 16. BUSINESS EXPENSES
+
+Create an expense summary.
+
+Show:
+
+* Total expenses
+* Expense categories
+* Highest expense
+* Expense trends
+
+Example:
+
+Stock — K15,000
+Fuel — K3,200
+Transport — K2,500
+Rent — K2,000
+Wages — K4,000
+
+---
+
+# 17. REPORTS
+
+Create a Reports section.
+
+Reports should include:
+
+### Cash Flow Report
+
+Show:
+
+* Total Money In
+* Total Money Out
+* Net Cash Flow
+
+### Income Report
+
+Break down money received by category.
+
+### Expense Report
+
+Break down expenses by category.
+
+### Transaction Report
+
+Complete transaction listing.
+
+### Receipt Report
+
+Show:
+
+* Total transactions
+* Transactions with receipts
+* Transactions without receipts
+* Receipt coverage percentage
+
+---
+
+# 18. MONTHLY REPORT
+
+Allow users to select:
+
+* Month
+* Year
+* Custom date range
+
+Example:
+
+## August 2026 Business Report
+
+Money In:
+
+**K45,500**
+
+Money Out:
+
+**K31,250**
+
+Net Cash Flow:
+
+**K14,250**
+
+Transactions:
+
+**183**
+
+Receipts:
+
+**171**
+
+Missing:
+
+**12**
+
+Provide:
+
+**Download PDF**
+
+**Export CSV**
+
+---
+
+# 19. EXPORT
+
+Implement export functionality.
+
+Users should be able to export:
+
+* Transactions
+* Money In
+* Money Out
+* Expenses
+* Monthly reports
+
+Support:
+
+* CSV
+* PDF
+
+Design the PDF professionally with:
+
+**KinaKeep (KK)**
+
+Business name
+
+Report period
+
+Generated date
+
+Summary
+
+Detailed transactions
+
+---
+
+# 20. DOCUMENT MANAGEMENT
+
+Create a simple digital business filing system.
+
+Categories:
+
+* Receipts
+* Supplier Invoices
+* Customer Invoices
+* Bank Statements
+* Tax Documents
+* Licences
+* Contracts
+* Employee Documents
+* Other
+
+Users can:
+
+* Upload
+* Search
+* Preview
+* Download
+* Delete
+
+Each document should have:
+
+* Name
+* Category
+* Date
+* Description
+* File
+
+---
+
+# 21. BUSINESS PROFILE
+
+Allow the user to create and manage business information.
+
+Fields:
+
+* Business Name
+* Owner Name
+* Business Type
+* Phone
+* Email
+* Location
+* Address
+* Logo
+* Description
+
+Example:
+
+**Business Name:** Newton Trade Store
+**Business Type:** Retail
+**Location:** Goroka, Eastern Highlands Province
+**Phone:** XXXXXXXX
+
+Do not hard-code personal information.
+
+---
+
+# 22. MULTI-BUSINESS SUPPORT
+
+Design the database so one user can have multiple businesses.
+
+Example:
+
+User:
+
+Newton Timothy
+
+Businesses:
+
+* Newton Trade Store
+* Naltiks Codtech
+* Newton Transport
+
+Each business must have completely separate:
+
+* Transactions
+* Receipts
+* Customers
+* Suppliers
+* Reports
+* Documents
+
+Provide a business switcher in the dashboard.
+
+---
+
+# 23. SEARCH
+
+Create a global transaction/document search.
+
+Users should be able to search:
+
+* Transaction reference
+* Description
+* Customer
+* Supplier
+* Category
+* Amount
+* Document name
+
+Search should be fast and case-insensitive.
+
+---
+
+# 24. MOBILE-FIRST DESIGN
+
+This application is primarily intended for SME owners using smartphones.
+
+Make the application highly responsive.
+
+Important mobile actions should be easy:
+
+**+ Money In**
+
+**+ Money Out**
+
+**📷 Add Receipt**
+
+Use large buttons and readable forms.
+
+Avoid tiny tables on mobile.
+
+Convert tables into cards when necessary.
+
+---
+
+# 25. RECEIPT CAMERA EXPERIENCE
+
+Design the receipt upload component so it can eventually support:
+
+**Take Photo**
+
+and
+
+**Upload File**
+
+On supported mobile browsers, use the camera capture capability.
+
+The initial MVP does not need OCR.
+
+However, create the code architecture so AI/OCR can be added later.
+
+---
+
+# 26. DATA VALIDATION
+
+Validate:
+
+* Amount must be greater than zero
+* Required fields cannot be empty
+* Date must be valid
+* Uploaded files must have allowed file types
+* File size must have a reasonable maximum
+* Users must only access their own business data
+
+Never trust client-side validation alone.
+
+Validate on the backend as well.
+
+---
+
+# 27. SECURITY
+
+Implement:
+
+* Password hashing
+* Protected API routes
+* Authentication middleware
+* Authorization
+* Business-level data isolation
+* Secure file access
+* Input validation
+* SQL injection protection through Prisma
+* Proper error handling
+* No sensitive data in frontend source code
+* Environment variables for secrets
+
+A user must never be able to access another user's transactions by changing an ID in the URL.
+
+---
+
+# 28. DATABASE RELATIONSHIPS
+
+Use a clean relational structure.
+
+At minimum:
+
+Users
+→ Businesses
+→ Transactions
+→ Receipts
+
+Businesses
+→ Customers
+
+Businesses
+→ Suppliers
+
+Businesses
+→ Documents
+
+Transactions
+→ Customers
+
+Transactions
+→ Suppliers
+
+Transactions
+→ Receipts
+
+Use foreign keys and appropriate indexes.
+
+---
+
+# 29. ERROR HANDLING
+
+Do not display technical errors to normal users.
+
+Instead of:
+
+“500 Internal Server Error”
+
+show:
+
+**“Something went wrong. Please try again.”**
+
+Log detailed errors on the server for development/debugging.
+
+---
+
+# 30. EMPTY STATES
+
+Design helpful empty states.
+
+For example, if there are no transactions:
+
+**No transactions yet**
+
+“Start recording your business money today.”
+
+Button:
+
+**+ Record Money In**
+
+and
+
+**+ Record Money Out**
+
+---
+
+# 31. NOTIFICATIONS
+
+Create a simple notification system for:
+
+* Successful transaction
+* Receipt uploaded
+* Transaction deleted
+* Report generated
+* Missing receipt reminders
+
+Example:
+
+**✓ Transaction saved successfully.**
+
+**✓ Receipt attached successfully.**
+
+---
+
+# 32. FUTURE AI FEATURES
+
+Do NOT make AI a requirement for the MVP.
+
+However, structure the code so the following can be added later:
+
+### AI Receipt Scanner
+
+Upload receipt → AI extracts:
+
+* Supplier
+* Date
+* Amount
+* Category
+* Items
+
+### AI Bookkeeping Assistant
+
+User asks:
+
+“How much did I spend on fuel this month?”
+
+AI answers using the user's transaction data.
+
+Example:
+
+“You spent K3,250 on fuel across 14 transactions in August.”
+
+### AI Business Insights
+
+Example:
+
+“Your expenses increased by 18% compared with July.”
+
+---
+
+# 33. FUTURE TOK PISIN SUPPORT
+
+Design the application so text can eventually be translated.
+
+Future languages:
+
+* English
+* Tok Pisin
+
+Do not hard-code all user-facing text directly inside complex components.
+
+Use a translation/i18n structure.
+
+---
+
+# 34. FUTURE OFFLINE SUPPORT
+
+Prepare the application for future PWA/offline functionality.
+
+The future version should allow:
+
+* Recording transactions offline
+* Taking receipt photos offline
+* Saving locally
+* Synchronizing when internet becomes available
+
+Do not attempt to fully implement offline synchronization unless it can be done reliably in the MVP.
+
+---
+
+# 35. AUDIT LOG
+
+Create an audit log for important actions.
+
+Track:
+
+* Transaction created
+* Transaction edited
+* Transaction deleted
+* Receipt uploaded
+* Receipt deleted
+* Document uploaded
+* User login
+
+Example:
+
+**11 Aug 2026 — Transaction KK-TXN-00124 edited**
+
+This will improve accountability.
+
+---
+
+# 36. USER EXPERIENCE PRINCIPLE
+
+The application must feel like:
+
+**“A simple digital notebook for my business money.”**
+
+Not:
+
+**“Complicated accounting software.”**
+
+A new SME owner should be able to understand the system without training.
+
+---
+
+# 37. LANDING PAGE
+
+Create a public landing page.
+
+Hero:
+
+# KinaKeep
+
+### Keep Every Kina Accounted For.
+
+Subtitle:
+
+**A simple digital bookkeeping and receipt management system built to help Papua New Guinean SMEs record, organize and understand their business finances.**
+
+Buttons:
+
+**Get Started**
+
+**Learn More**
+
+Sections:
+
+### Record Every Transaction
+
+Keep track of money coming into and going out of your business.
+
+### Keep Every Receipt
+
+Digitally store receipts and business documents.
+
+### Understand Your Business
+
+View simple reports showing your income, expenses and cash flow.
+
+### Built for SMEs
+
+Designed with small businesses in Papua New Guinea in mind.
+
+---
+
+# 38. LANDING PAGE CTA
+
+Add:
+
+**Start Keeping Your Business Records**
+
+Button:
+
+**Create Free Account**
+
+Do not implement paid subscriptions in the MVP unless necessary.
+
+---
+
+# 39. DEMO DATA
+
+Create a development/demo mode with realistic sample data.
+
+Example business:
+
+**Newton Trade Store**
+
+Use fictional transaction data.
+
+Example:
+
+Money In:
+
+* Product Sales — K500
+* Product Sales — K850
+* Customer Payment — K300
+
+Money Out:
+
+* Stock Purchase — K1,200
+* Fuel — K150
+* Transport — K100
+
+Use sample receipts where appropriate.
+
+Clearly identify demo data and never mix it with real users' data.
+
+---
+
+# 40. UI COMPONENTS
+
+Create reusable components:
+
+* Button
+* Card
+* Modal
+* Form
+* Input
+* Select
+* DatePicker
+* CurrencyInput
+* TransactionCard
+* TransactionTable
+* ReceiptUploader
+* ReceiptPreview
+* DashboardCard
+* Chart
+* Notification
+* ConfirmationDialog
+* EmptyState
+* LoadingState
+* ErrorState
+
+Keep components modular and reusable.
+
+---
+
+# 41. CURRENCY
+
+Use Papua New Guinea Kina.
+
+Display:
+
+**K 1,250.00**
+
+Do not use dollar signs for the primary currency.
+
+Create a reusable currency formatting function.
+
+---
+
+# 42. DATE FORMAT
+
+Use a user-friendly PNG/local format.
+
+Example:
+
+**11 Aug 2026**
+
+Store dates in a proper database date/time format.
+
+Avoid storing dates as arbitrary strings.
+
+---
+
+# 43. IMPORTANT ACCOUNTING NOTE
+
+Do not claim that the application automatically provides official tax/accounting compliance.
+
+This MVP is primarily:
+
+**A bookkeeping, transaction recording, receipt management and reporting tool.**
+
+Include a small disclaimer where appropriate that users should consult a qualified accountant or relevant authority for formal tax/accounting requirements.
+
+---
+
+# 44. CODE QUALITY
+
+Write production-quality code.
+
+Requirements:
+
+* TypeScript
+* Clean folder structure
+* Reusable components
+* Clear naming
+* Comments only where useful
+* Environment variables
+* API validation
+* Error handling
+* Database migrations
+* No unnecessary dependencies
+* No duplicated code
+
+Do not create one giant component.
+
+---
+
+# 45. PROJECT STRUCTURE
+
+Use a structure similar to:
+
+frontend/
+components/
+pages/
+layouts/
+hooks/
+services/
+utils/
+types/
+
+backend/
+controllers/
+routes/
+middleware/
+services/
+validators/
+utils/
+
+database/
+prisma/
+
+shared/
+types/
+
+Keep frontend and backend responsibilities clearly separated.
+
+---
+
+# 46. DEVELOPMENT PRIORITY
+
+Build in this order:
+
+### Phase 1
+
+1. Project setup
+2. Database
+3. Authentication
+4. Business profile
+5. Dashboard
+
+### Phase 2
+
+6. Money In
+7. Money Out
+8. Transactions
+9. Categories
+10. Payment methods
+
+### Phase 3
+
+11. Receipt upload
+12. Receipt preview
+13. Missing receipt tracking
+14. Document management
+
+### Phase 4
+
+15. Customers
+16. Suppliers
+17. Credit sales
+
+### Phase 5
+
+18. Reports
+19. Charts
+20. CSV export
+21. PDF export
+
+### Phase 6
+
+22. UI polish
+23. Mobile responsiveness
+24. Security testing
+25. Error handling
+26. Demo data
+27. Final testing
+
+---
+
+# 47. TESTING
+
+Before considering the MVP complete, test:
+
+### Authentication
+
+* Register
+* Login
+* Logout
+* Invalid password
+* Protected pages
+
+### Transactions
+
+* Create Money In
+* Create Money Out
+* Edit
+* Delete
+* Search
+* Filter
+
+### Receipts
+
+* Upload
+* Preview
+* Download
+* Delete
+* Missing receipt detection
+
+### Reports
+
+* Correct calculations
+* Date filtering
+* Monthly totals
+* Expense categories
+
+### Security
+
+Verify that one user cannot access another user's:
+
+* Business
+* Transactions
+* Receipts
+* Documents
+* Customers
+* Suppliers
+
+### Mobile
+
+Test the interface on:
+
+* Mobile
+* Tablet
+* Desktop
+
+---
+
+# 48. IMPORTANT CALCULATION RULE
+
+For the simple cash-flow model:
+
+**Net Cash Flow = Total Money In − Total Money Out**
+
+Display this clearly.
+
+Do not represent net cash flow as formal accounting profit unless the system later implements proper accounting rules.
+
+---
+
+# 49. FINAL PRODUCT FEEL
+
+When finished, KinaKeep should feel:
+
+**Simple enough for a market vendor.**
+
+**Professional enough for a growing SME.**
+
+**Powerful enough to generate useful business reports.**
+
+**Flexible enough to eventually become a larger PNG SME financial-management platform.**
+
+---
+
+# 50. FINAL DEVELOPMENT INSTRUCTION
+
+Start by building the complete functional MVP rather than only creating mockup screens.
+
+Use realistic demo data to demonstrate the application.
+
+Make all major buttons functional.
+
+Do not leave placeholder buttons such as “Coming Soon” for features listed as MVP requirements.
+
+Prioritize working:
+
+* Authentication
+* Dashboard
+* Money In
+* Money Out
+* Transactions
+* Receipt upload
+* Receipt management
+* Search/filter
+* Reports
+* CSV/PDF export
+
+After implementation, run the application, test the major user flows, fix errors, and ensure the application works correctly on both desktop and mobile.
+
+The final application should be branded consistently as:
+
+# **KinaKeep (KK)**
+
+### **Keep Every Kina Accounted For.**
+
+Build it as a clean, reliable and scalable foundation for a Papua New Guinean SME bookkeeping platform.

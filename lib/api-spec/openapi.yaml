@@ -3,13 +3,35 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: KinaKeep SME Bookkeeping API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: Auth
+    description: Browser and mobile authentication endpoints.
+  - name: Storage
+    description: Object storage upload and serving endpoints.
+  - name: Businesses
+    description: Business management
+  - name: Transactions
+    description: Money in and money out transactions
+  - name: Customers
+    description: Customer management
+  - name: Suppliers
+    description: Supplier management
+  - name: Categories
+    description: Custom transaction categories
+  - name: Receipts
+    description: Receipt management
+  - name: Documents
+    description: Business document management
+  - name: Reports
+    description: Financial reports and summaries
+  - name: Dashboard
+    description: Dashboard aggregates
 paths:
   /healthz:
     get:
@@ -24,7 +46,1078 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/user:
+    get:
+      tags: [Auth]
+      operationId: getCurrentAuthUser
+      summary: Get the currently authenticated user
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationSessionHeader'
+        - $ref: '#/components/parameters/SessionCookie'
+      responses:
+        '200':
+          description: Auth status resolved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthUserEnvelope'
+
+  /login:
+    get:
+      tags: [Auth]
+      operationId: beginBrowserLogin
+      summary: Start the browser OIDC login flow
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to the OIDC authorization endpoint.
+
+  /callback:
+    get:
+      tags: [Auth]
+      operationId: handleBrowserLoginCallback
+      summary: Complete the browser OIDC login flow
+      parameters:
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iss
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to the returnTo path on success.
+
+  /logout:
+    get:
+      tags: [Auth]
+      operationId: logoutBrowserSession
+      summary: Clear the session and begin OIDC logout
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationSessionHeader'
+        - $ref: '#/components/parameters/SessionCookie'
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+            default: /
+      responses:
+        '302':
+          description: Redirect to OIDC provider logout URL.
+
+  /mobile-auth/token-exchange:
+    post:
+      tags: [Auth]
+      operationId: exchangeMobileAuthorizationCode
+      summary: Exchange a mobile OIDC code for a session token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileTokenExchangeRequest'
+      responses:
+        '200':
+          description: Session created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileTokenExchangeSuccess'
+        '400':
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Token did not contain usable claims.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Token exchange failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /mobile-auth/logout:
+    post:
+      tags: [Auth]
+      operationId: logoutMobileSession
+      summary: Delete a mobile session token
+      parameters:
+        - $ref: '#/components/parameters/AuthorizationSessionHeader'
+      responses:
+        '200':
+          description: Logout processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutSuccess'
+
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+      responses:
+        '200':
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadUrlResponse'
+        '400':
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Failed to generate upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /storage/public-objects/{filePath}:
+    get:
+      tags: [Storage]
+      operationId: getPublicObject
+      summary: Serve a public asset
+      parameters:
+        - name: filePath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getStorageObject
+      summary: Serve an object entity
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Object not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  # ─── Businesses ───────────────────────────────────────────────────────────
+  /businesses:
+    get:
+      tags: [Businesses]
+      operationId: listBusinesses
+      summary: List all businesses for the current user
+      responses:
+        '200':
+          description: List of businesses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Business'
+    post:
+      tags: [Businesses]
+      operationId: createBusiness
+      summary: Create a new business
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessInput'
+      responses:
+        '201':
+          description: Business created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /businesses/{businessId}:
+    get:
+      tags: [Businesses]
+      operationId: getBusiness
+      summary: Get a specific business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      responses:
+        '200':
+          description: Business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    patch:
+      tags: [Businesses]
+      operationId: updateBusiness
+      summary: Update a business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessUpdate'
+      responses:
+        '200':
+          description: Updated business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Business'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    delete:
+      tags: [Businesses]
+      operationId: deleteBusiness
+      summary: Delete a business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  # ─── Categories ───────────────────────────────────────────────────────────
+  /businesses/{businessId}/categories:
+    get:
+      tags: [Categories]
+      operationId: listCategories
+      summary: List all categories for a business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [income, expense]
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      tags: [Categories]
+      operationId: createCategory
+      summary: Create a custom category
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+
+  /businesses/{businessId}/categories/{categoryId}:
+    delete:
+      tags: [Categories]
+      operationId: deleteCategory
+      summary: Delete a category
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '204':
+          description: Deleted
+
+  # ─── Transactions ─────────────────────────────────────────────────────────
+  /businesses/{businessId}/transactions:
+    get:
+      tags: [Transactions]
+      operationId: listTransactions
+      summary: List transactions with filtering and pagination
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [income, expense]
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: paymentMethod
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: receiptStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [attached, missing]
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+    post:
+      tags: [Transactions]
+      operationId: createTransaction
+      summary: Create a transaction (money in or out)
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '201':
+          description: Transaction created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /businesses/{businessId}/transactions/{transactionId}:
+    get:
+      tags: [Transactions]
+      operationId: getTransaction
+      summary: Get a specific transaction
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/TransactionIdParam'
+      responses:
+        '200':
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    patch:
+      tags: [Transactions]
+      operationId: updateTransaction
+      summary: Update a transaction
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/TransactionIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdate'
+      responses:
+        '200':
+          description: Updated transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    delete:
+      tags: [Transactions]
+      operationId: deleteTransaction
+      summary: Delete a transaction
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/TransactionIdParam'
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  # ─── Customers ────────────────────────────────────────────────────────────
+  /businesses/{businessId}/customers:
+    get:
+      tags: [Customers]
+      operationId: listCustomers
+      summary: List customers for a business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      tags: [Customers]
+      operationId: createCustomer
+      summary: Create a customer
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInput'
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /businesses/{businessId}/customers/{customerId}:
+    get:
+      tags: [Customers]
+      operationId: getCustomer
+      summary: Get a customer
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/CustomerIdParam'
+      responses:
+        '200':
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    patch:
+      tags: [Customers]
+      operationId: updateCustomer
+      summary: Update a customer
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/CustomerIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdate'
+      responses:
+        '200':
+          description: Updated customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    delete:
+      tags: [Customers]
+      operationId: deleteCustomer
+      summary: Delete a customer
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/CustomerIdParam'
+      responses:
+        '204':
+          description: Deleted
+
+  /businesses/{businessId}/customers/{customerId}/mark-paid:
+    post:
+      tags: [Customers]
+      operationId: markCustomerCreditPaid
+      summary: Mark customer outstanding credit as paid (creates a money-in transaction)
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/CustomerIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkPaidInput'
+      responses:
+        '201':
+          description: Payment recorded and transaction created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+
+  # ─── Suppliers ────────────────────────────────────────────────────────────
+  /businesses/{businessId}/suppliers:
+    get:
+      tags: [Suppliers]
+      operationId: listSuppliers
+      summary: List suppliers for a business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of suppliers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Supplier'
+    post:
+      tags: [Suppliers]
+      operationId: createSupplier
+      summary: Create a supplier
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierInput'
+      responses:
+        '201':
+          description: Supplier created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+
+  /businesses/{businessId}/suppliers/{supplierId}:
+    get:
+      tags: [Suppliers]
+      operationId: getSupplier
+      summary: Get a supplier
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/SupplierIdParam'
+      responses:
+        '200':
+          description: Supplier details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+    patch:
+      tags: [Suppliers]
+      operationId: updateSupplier
+      summary: Update a supplier
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/SupplierIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierUpdate'
+      responses:
+        '200':
+          description: Updated supplier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+    delete:
+      tags: [Suppliers]
+      operationId: deleteSupplier
+      summary: Delete a supplier
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/SupplierIdParam'
+      responses:
+        '204':
+          description: Deleted
+
+  # ─── Documents ────────────────────────────────────────────────────────────
+  /businesses/{businessId}/documents:
+    get:
+      tags: [Documents]
+      operationId: listDocuments
+      summary: List documents for a business
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+    post:
+      tags: [Documents]
+      operationId: createDocument
+      summary: Create a document record
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentInput'
+      responses:
+        '201':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+
+  /businesses/{businessId}/documents/{documentId}:
+    get:
+      tags: [Documents]
+      operationId: getDocument
+      summary: Get a document
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/DocumentIdParam'
+      responses:
+        '200':
+          description: Document details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+    patch:
+      tags: [Documents]
+      operationId: updateDocument
+      summary: Update a document
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/DocumentIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentUpdate'
+      responses:
+        '200':
+          description: Updated document
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+    delete:
+      tags: [Documents]
+      operationId: deleteDocument
+      summary: Delete a document
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - $ref: '#/components/parameters/DocumentIdParam'
+      responses:
+        '204':
+          description: Deleted
+
+  # ─── Dashboard ────────────────────────────────────────────────────────────
+  /businesses/{businessId}/dashboard:
+    get:
+      tags: [Dashboard]
+      operationId: getDashboardStats
+      summary: Get dashboard summary stats
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: period
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [this_week, this_month, last_month, this_year]
+            default: this_month
+      responses:
+        '200':
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStats'
+
+  /businesses/{businessId}/dashboard/cashflow:
+    get:
+      tags: [Dashboard]
+      operationId: getCashFlowChart
+      summary: Get cash flow chart data
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: period
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [this_week, this_month, last_month, this_year]
+            default: this_month
+      responses:
+        '200':
+          description: Cash flow chart data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CashFlowPoint'
+
+  /businesses/{businessId}/dashboard/expense-breakdown:
+    get:
+      tags: [Dashboard]
+      operationId: getExpenseBreakdown
+      summary: Get expense breakdown by category
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: period
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [this_week, this_month, last_month, this_year]
+            default: this_month
+      responses:
+        '200':
+          description: Expense breakdown by category
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryBreakdown'
+
+  /businesses/{businessId}/dashboard/recent-transactions:
+    get:
+      tags: [Dashboard]
+      operationId: getRecentTransactions
+      summary: Get recent transactions for dashboard
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 10
+      responses:
+        '200':
+          description: Recent transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+
+  # ─── Reports ──────────────────────────────────────────────────────────────
+  /businesses/{businessId}/reports/summary:
+    get:
+      tags: [Reports]
+      operationId: getReportSummary
+      summary: Get report summary for a date range
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Report summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportSummary'
+
+  /businesses/{businessId}/reports/income-breakdown:
+    get:
+      tags: [Reports]
+      operationId: getIncomeBreakdown
+      summary: Get income breakdown by category
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Income breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryBreakdown'
+
+  /businesses/{businessId}/reports/expense-breakdown:
+    get:
+      tags: [Reports]
+      operationId: getReportExpenseBreakdown
+      summary: Get expense breakdown by category for report
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Expense breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryBreakdown'
+
+  /businesses/{businessId}/reports/missing-receipts:
+    get:
+      tags: [Reports]
+      operationId: getMissingReceiptsReport
+      summary: Get all transactions with missing receipts
+      parameters:
+        - $ref: '#/components/parameters/BusinessIdParam'
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Transactions with missing receipts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+
 components:
+  parameters:
+    AuthorizationSessionHeader:
+      name: Authorization
+      in: header
+      required: false
+      description: Opaque session token — `Bearer <sid>`.
+      schema:
+        type: string
+    SessionCookie:
+      name: sid
+      in: cookie
+      required: false
+      description: Browser session cookie.
+      schema:
+        type: string
+    BusinessIdParam:
+      name: businessId
+      in: path
+      required: true
+      schema:
+        type: number
+    TransactionIdParam:
+      name: transactionId
+      in: path
+      required: true
+      schema:
+        type: number
+    CustomerIdParam:
+      name: customerId
+      in: path
+      required: true
+      schema:
+        type: number
+    SupplierIdParam:
+      name: supplierId
+      in: path
+      required: true
+      schema:
+        type: number
+    DocumentIdParam:
+      name: documentId
+      in: path
+      required: true
+      schema:
+        type: number
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +1127,599 @@ components:
       required:
         - status
 
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    # ─── Auth ──────────────────────────────────────────────────────────────
+    AuthUser:
+      type: object
+      required: [id, email, firstName, lastName, profileImageUrl]
+      properties:
+        id:
+          type: string
+        email:
+          type: [string, 'null']
+        firstName:
+          type: [string, 'null']
+        lastName:
+          type: [string, 'null']
+        profileImageUrl:
+          type: [string, 'null']
+
+    AuthUserEnvelope:
+      type: object
+      required: [user]
+      properties:
+        user:
+          oneOf:
+            - $ref: '#/components/schemas/AuthUser'
+            - type: 'null'
+
+    MobileTokenExchangeRequest:
+      type: object
+      required: [code, code_verifier, redirect_uri, state]
+      properties:
+        code:
+          type: string
+          minLength: 1
+        code_verifier:
+          type: string
+          minLength: 1
+        redirect_uri:
+          type: string
+          minLength: 1
+        state:
+          type: string
+          minLength: 1
+        nonce:
+          type: string
+          minLength: 1
+
+    MobileTokenExchangeSuccess:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+
+    LogoutSuccess:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+          const: true
+
+    # ─── Storage ───────────────────────────────────────────────────────────
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        size:
+          type: number
+          minimum: 1
+        contentType:
+          type: string
+          minLength: 1
+
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+        objectPath:
+          type: string
+
+    # ─── Business ──────────────────────────────────────────────────────────
+    Business:
+      type: object
+      required: [id, userId, name, type, createdAt]
+      properties:
+        id:
+          type: number
+        userId:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        ownerName:
+          type: [string, 'null']
+        phone:
+          type: [string, 'null']
+        email:
+          type: [string, 'null']
+        location:
+          type: [string, 'null']
+        address:
+          type: [string, 'null']
+        description:
+          type: [string, 'null']
+        logoPath:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BusinessInput:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          minLength: 1
+        ownerName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        location:
+          type: string
+        address:
+          type: string
+        description:
+          type: string
+        logoPath:
+          type: string
+
+    BusinessUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          type: string
+        ownerName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        location:
+          type: string
+        address:
+          type: string
+        description:
+          type: string
+        logoPath:
+          type: string
+
+    # ─── Category ──────────────────────────────────────────────────────────
+    Category:
+      type: object
+      required: [id, businessId, name, type, isDefault]
+      properties:
+        id:
+          type: number
+        businessId:
+          type: number
+        name:
+          type: string
+        type:
+          type: string
+          enum: [income, expense]
+        isDefault:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    CategoryInput:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum: [income, expense]
+
+    # ─── Transaction ───────────────────────────────────────────────────────
+    Transaction:
+      type: object
+      required: [id, businessId, type, amount, description, date, paymentMethod, referenceNumber, receiptStatus, createdAt]
+      properties:
+        id:
+          type: number
+        businessId:
+          type: number
+        type:
+          type: string
+          enum: [income, expense]
+        amount:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        categoryId:
+          type: [integer, 'null']
+        categoryName:
+          type: [string, 'null']
+        paymentMethod:
+          type: string
+        customerId:
+          type: [integer, 'null']
+        customerName:
+          type: [string, 'null']
+        supplierId:
+          type: [integer, 'null']
+        supplierName:
+          type: [string, 'null']
+        referenceNumber:
+          type: string
+        receiptPath:
+          type: [string, 'null']
+        receiptStatus:
+          type: string
+          enum: [attached, missing]
+        receiptReference:
+          type: [string, 'null']
+        notes:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TransactionList:
+      type: object
+      required: [transactions, total, page, limit]
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        total:
+          type: number
+        page:
+          type: number
+        limit:
+          type: number
+
+    TransactionInput:
+      type: object
+      required: [type, amount, description, date, paymentMethod]
+      properties:
+        type:
+          type: string
+          enum: [income, expense]
+        amount:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          format: date
+        categoryId:
+          type: number
+        paymentMethod:
+          type: string
+          minLength: 1
+        customerId:
+          type: number
+        supplierId:
+          type: number
+        receiptPath:
+          type: string
+        receiptReference:
+          type: string
+        notes:
+          type: string
+
+    TransactionUpdate:
+      type: object
+      properties:
+        amount:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        categoryId:
+          type: [integer, 'null']
+        paymentMethod:
+          type: string
+        customerId:
+          type: [integer, 'null']
+        supplierId:
+          type: [integer, 'null']
+        receiptPath:
+          type: [string, 'null']
+        receiptReference:
+          type: [string, 'null']
+        notes:
+          type: [string, 'null']
+
+    # ─── Customer ──────────────────────────────────────────────────────────
+    Customer:
+      type: object
+      required: [id, businessId, name, totalCredit, totalPaid, outstandingBalance, createdAt]
+      properties:
+        id:
+          type: number
+        businessId:
+          type: number
+        name:
+          type: string
+        phone:
+          type: [string, 'null']
+        email:
+          type: [string, 'null']
+        address:
+          type: [string, 'null']
+        notes:
+          type: [string, 'null']
+        totalCredit:
+          type: string
+        totalPaid:
+          type: string
+        outstandingBalance:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CustomerInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        notes:
+          type: string
+
+    CustomerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        phone:
+          type: [string, 'null']
+        email:
+          type: [string, 'null']
+        address:
+          type: [string, 'null']
+        notes:
+          type: [string, 'null']
+
+    MarkPaidInput:
+      type: object
+      required: [amount, date]
+      properties:
+        amount:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          format: date
+        notes:
+          type: string
+
+    # ─── Supplier ──────────────────────────────────────────────────────────
+    Supplier:
+      type: object
+      required: [id, businessId, name, totalPurchases, createdAt]
+      properties:
+        id:
+          type: number
+        businessId:
+          type: number
+        name:
+          type: string
+        contactPerson:
+          type: [string, 'null']
+        phone:
+          type: [string, 'null']
+        email:
+          type: [string, 'null']
+        address:
+          type: [string, 'null']
+        notes:
+          type: [string, 'null']
+        totalPurchases:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SupplierInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        contactPerson:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        notes:
+          type: string
+
+    SupplierUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        contactPerson:
+          type: [string, 'null']
+        phone:
+          type: [string, 'null']
+        email:
+          type: [string, 'null']
+        address:
+          type: [string, 'null']
+        notes:
+          type: [string, 'null']
+
+    # ─── Document ──────────────────────────────────────────────────────────
+    Document:
+      type: object
+      required: [id, businessId, name, category, date, filePath, createdAt]
+      properties:
+        id:
+          type: number
+        businessId:
+          type: number
+        name:
+          type: string
+        category:
+          type: string
+        date:
+          type: string
+          format: date
+        description:
+          type: [string, 'null']
+        filePath:
+          type: string
+        fileType:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+
+    DocumentInput:
+      type: object
+      required: [name, category, date, filePath]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+        filePath:
+          type: string
+        fileType:
+          type: string
+
+    DocumentUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        date:
+          type: string
+          format: date
+        description:
+          type: [string, 'null']
+
+    # ─── Dashboard ─────────────────────────────────────────────────────────
+    DashboardStats:
+      type: object
+      required: [totalMoneyIn, totalMoneyOut, netCashFlow, balance, transactionCount, receiptsAttached, receiptsMissing, receiptCoverage]
+      properties:
+        totalMoneyIn:
+          type: string
+        totalMoneyOut:
+          type: string
+        netCashFlow:
+          type: string
+        balance:
+          type: string
+        transactionCount:
+          type: number
+        receiptsAttached:
+          type: number
+        receiptsMissing:
+          type: number
+        receiptCoverage:
+          type: number
+
+    CashFlowPoint:
+      type: object
+      required: [label, moneyIn, moneyOut]
+      properties:
+        label:
+          type: string
+        moneyIn:
+          type: number
+        moneyOut:
+          type: number
+
+    CategoryBreakdown:
+      type: object
+      required: [categoryName, total, count]
+      properties:
+        categoryName:
+          type: string
+        total:
+          type: number
+        count:
+          type: number
+
+    # ─── Reports ───────────────────────────────────────────────────────────
+    ReportSummary:
+      type: object
+      required: [startDate, endDate, totalMoneyIn, totalMoneyOut, netCashFlow, transactionCount, receiptsAttached, receiptsMissing, receiptCoverage]
+      properties:
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        totalMoneyIn:
+          type: string
+        totalMoneyOut:
+          type: string
+        netCashFlow:
+          type: string
+        transactionCount:
+          type: number
+        receiptsAttached:
+          type: number
+        receiptsMissing:
+          type: number
+        receiptCoverage:
+          type: number

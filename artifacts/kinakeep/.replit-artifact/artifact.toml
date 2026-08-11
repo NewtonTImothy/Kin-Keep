@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "KinaKeep"
+description = "KinaKeep (KK) is a digital bookkeeping and receipt management web app for Papua New Guinean SMEs. It lets business owners record Money In and Money Out transactions, attach digital receipts, manage customers and suppliers, and generate simple cash flow reports. Designed mobile-first with simple language — no accounting background required."
+version = "1.0.0"
+id = "artifacts/kinakeep"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19573
+
+[services.development]
+run = "pnpm --filter @workspace/kinakeep run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/kinakeep", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/kinakeep/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19573"
+BASE_PATH = "/"

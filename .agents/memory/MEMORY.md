@@ -1,0 +1,3 @@
+- [Orval + Zod v3 compatibility](orval-zod-compat.md) — Orval v8 generates Zod v4 syntax; must post-process generated file and strip integer/email/uri format annotations from spec.
+- [KinaKeep DB schema](kinakeep-db-schema.md) — auth schema must exactly match replit-auth skill template; sessions table uses sid/sess(jsonb)/expire columns.
+- [KinaKeep codegen fix](kinakeep-codegen-fix.md) — orval config must omit schemas path to avoid TS2308 collisions between Zod schemas and TypeScript types.
