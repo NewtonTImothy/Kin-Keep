@@ -8,6 +8,13 @@ export default function Landing() {
   const { isAuthenticated, login, isLoading } = useAuth();
   const [, setLocation] = useLocation();
 
+  // All hooks must be called unconditionally before any early returns
+  React.useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      setLocation('/app/dashboard');
+    }
+  }, [isLoading, isAuthenticated, setLocation]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -15,12 +22,6 @@ export default function Landing() {
       </div>
     );
   }
-
-  React.useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      setLocation('/app/dashboard');
-    }
-  }, [isLoading, isAuthenticated, setLocation]);
 
   if (isAuthenticated) return null;
 
