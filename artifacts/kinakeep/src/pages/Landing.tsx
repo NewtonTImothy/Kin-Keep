@@ -42,7 +42,7 @@ export default function Landing() {
       <main className="flex-1">
 
         {/* ── Hero ── */}
-        <section className="relative px-5 pt-16 pb-14 md:pt-28 md:pb-24 flex flex-col items-center text-center max-w-3xl mx-auto">
+        <section className="relative px-5 pt-16 pb-14 md:pt-20 md:pb-16 flex flex-col items-center text-center max-w-3xl mx-auto">
           {/* Mobile-only kina note background */}
           <div className="md:hidden absolute inset-0 -mx-5 overflow-hidden pointer-events-none" aria-hidden="true">
             <img
@@ -61,12 +61,12 @@ export default function Landing() {
             </div>
 
             {/* Badge */}
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-secondary/15 text-secondary text-xs font-semibold tracking-wide uppercase mb-5 backdrop-blur-sm">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-secondary/15 text-secondary text-xs font-semibold tracking-wide uppercase mb-5 backdrop-blur-sm">
               Built for PNG Small Businesses
             </span>
 
             {/* Headline */}
-            <h1 className="font-display font-bold text-[2.2rem] leading-tight md:text-6xl text-primary tracking-tight mb-4 drop-shadow-sm">
+            <h1 className="font-display font-bold text-[2.2rem] leading-tight md:text-6xl text-primary tracking-tight mb-5 drop-shadow-sm">
               Every Kina.<br />Accounted For.
             </h1>
 
@@ -88,7 +88,7 @@ export default function Landing() {
                 onClick={login}
                 size="lg"
                 variant="ghost"
-                className="w-full sm:w-auto h-12 px-6 text-base text-muted-foreground hover:text-primary"
+                className="w-full sm:w-auto h-12 px-6 text-base text-muted-foreground hover:text-primary rounded-full"
               >
                 Log in to my account
               </Button>
