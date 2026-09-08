@@ -1,0 +1,12 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
+  "secrets": [
+    {
+      "name": "REPL_ID",
+      "description": "Replit OIDC client ID for authentication. Obtain from your Replit project settings. Without it, the app boots but login won't work.",
+      "requiredAtBoot": false
+    }
+  ]
+}
