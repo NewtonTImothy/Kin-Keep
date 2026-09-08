@@ -62,7 +62,7 @@ export default function Landing() {
 
             {/* Badge */}
             <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-secondary/15 text-secondary text-xs font-semibold tracking-wide uppercase mb-5 backdrop-blur-sm">
-              Built for PNG Small Businesses
+              Built for PNG
             </span>
 
             {/* Headline */}
@@ -72,7 +72,7 @@ export default function Landing() {
 
             {/* One-liner sub */}
             <p className="text-base md:text-lg text-foreground/70 max-w-md mb-8 leading-relaxed">
-              Your digital cashbook — record sales, expenses, and receipts from any phone, instantly.
+              Your digital cashbook — track sales and expenses from any phone.
             </p>
 
             {/* CTAs */}
@@ -82,7 +82,7 @@ export default function Landing() {
                 size="lg"
                 className="w-full sm:w-auto h-12 px-8 text-base font-semibold rounded-full shadow-md hover:shadow-lg transition-all"
               >
-                Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+                Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button
                 onClick={login}
@@ -90,7 +90,7 @@ export default function Landing() {
                 variant="ghost"
                 className="w-full sm:w-auto h-12 px-6 text-base text-muted-foreground hover:text-primary rounded-full"
               >
-                Log in to my account
+                Log in
               </Button>
             </div>
           </div>
